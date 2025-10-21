@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { TxItem } from "./blockscout";
 
 const ASI_API_KEY = process.env.ASI_API_KEY;
@@ -28,35 +27,35 @@ export async function getAIAnalysis(
 
     const analysisPrompt = createAnalysisPrompt(data);
 
-    const response = await axios.post(
-      "https://api.thealliance.ai/v1/chat/completions",
-      {
-        model: "gpt-4",
+    const response = await fetch("https://api.asi1.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ASI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "asi1-mini",
         messages: [
           {
             role: "system",
-            content:
-              "You are a blockchain analyst expert. Analyze wallet behavior and provide insights in a structured format.",
+            content: "You are a blockchain analyst expert. Analyze wallet behavior and provide insights in a structured format.",
           },
           {
             role: "user",
             content: analysisPrompt,
           },
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${ASI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 15000,
-      }
-    );
+        ]
+      })
+    });
 
-    if (response.data && response.data.choices && response.data.choices[0]) {
-      const aiResponse = response.data.choices[0].message.content;
+    if (!response.ok) {
+      throw new Error(`ASI API error: ${response.statusText}`);
+    }
+
+    const data_response = await response.json();
+    
+    if (data_response && data_response.choices && data_response.choices[0]) {
+      const aiResponse = data_response.choices[0].message.content;
       console.log("✅ Successfully generated AI analysis");
 
       return parseAIResponse(aiResponse, data);
