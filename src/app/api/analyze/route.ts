@@ -37,6 +37,27 @@ export async function POST(request: NextRequest) {
       `📊 Fetched ${transactions.length} transactions, ${tokenTransfers.length} token transfers`
     );
 
+    console.log("🔍 Detailed Blockchain Data Analysis:");
+    console.log(
+      `  • Wallet Balance: ${(parseFloat(balance) / 1e18).toFixed(4)} ETH`
+    );
+    console.log(`  • Total Transactions: ${transactions.length}`);
+    console.log(`  • Token Interactions: ${tokenTransfers.length}`);
+
+    if (transactions.length > 0) {
+      const successfulTxs = transactions.filter(
+        (tx) => tx.status === "1"
+      ).length;
+      const failedTxs = transactions.length - successfulTxs;
+      console.log(`  • Successful Transactions: ${successfulTxs}`);
+      console.log(`  • Failed Transactions: ${failedTxs}`);
+
+      const totalVolume =
+        transactions.reduce((sum, tx) => sum + parseFloat(tx.value || "0"), 0) /
+        1e18;
+      console.log(`  • Total ETH Volume: ${totalVolume.toFixed(4)} ETH`);
+    }
+
     const trustScore = calculateTrustScore(
       transactions,
       tokenTransfers,
@@ -61,6 +82,25 @@ export async function POST(request: NextRequest) {
         tokenTransferCount: tokenTransfers.length,
         balanceETH: (parseFloat(balance) / 1e18).toFixed(4),
         analyzedAt: new Date().toISOString(),
+        blockchainStats: {
+          successfulTransactions: transactions.filter((tx) => tx.status === "1")
+            .length,
+          failedTransactions: transactions.filter((tx) => tx.status === "0")
+            .length,
+          totalEthVolume: (
+            transactions.reduce(
+              (sum, tx) => sum + parseFloat(tx.value || "0"),
+              0
+            ) / 1e18
+          ).toFixed(4),
+          uniqueTokens: new Set(tokenTransfers.map((tt) => tt.token_symbol))
+            .size,
+          hasRecentActivity: transactions.some(
+            (tx) =>
+              new Date(tx.timestamp) >
+              new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+          ),
+        },
       },
     });
   } catch (error) {

@@ -10,6 +10,19 @@ import type { AIAnalysisResult } from "@/lib/asi";
 interface AnalysisResult {
   trustScore: TrustScoreDetails;
   aiAnalysis: AIAnalysisResult;
+  metadata?: {
+    transactionCount: number;
+    tokenTransferCount: number;
+    balanceETH: string;
+    analyzedAt: string;
+    blockchainStats?: {
+      successfulTransactions: number;
+      failedTransactions: number;
+      totalEthVolume: string;
+      uniqueTokens: number;
+      hasRecentActivity: boolean;
+    };
+  };
 }
 
 export default function HomePage() {
@@ -45,6 +58,7 @@ export default function HomePage() {
         setResult({
           trustScore: data.trustScore,
           aiAnalysis: data.aiAnalysis,
+          metadata: data.metadata,
         });
         console.log("✅ Analysis completed successfully");
       } else {
@@ -76,6 +90,7 @@ export default function HomePage() {
         address={currentAddress}
         trustScore={result.trustScore}
         aiAnalysis={result.aiAnalysis}
+        metadata={result.metadata}
         onBack={handleBack}
       />
     );

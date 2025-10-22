@@ -143,45 +143,63 @@ export async function fetchWalletTxs(
 export async function fetchTokenTransfers(
   address: string
 ): Promise<BlockscoutTokenTransfer[]> {
-  try {
-    console.log("🌐 Fetching token transfers...");
+  console.log("🌐 Extracting token activity from transaction data...");
 
-    const response = await axios.get(`${BLOCKSCOUT_BASE_URL}/api`, {
-      params: {
-        module: "account",
-        action: "tokentx",
-        address: address,
-        startblock: 0,
-        endblock: 99999999,
-        page: 1,
-        offset: 50,
-        sort: "desc",
-        ...(API_KEY && { apikey: API_KEY }),
-      },
-      timeout: 10000,
+  
+  try {
+    
+    const transactions = await fetchWalletTxs(address, 20); 
+
+    console.log("🔍 Analyzing transactions for token interactions...");
+
+    const tokenInteractions: BlockscoutTokenTransfer[] = [];
+    let estimatedTokenCount = 0;
+
+    transactions.forEach((tx, index) => {
+    
+      const isLikelyTokenTx =
+        (tx.method &&
+          (tx.method.includes("transfer") ||
+            tx.method.includes("swap") ||
+            tx.method.includes("approve") ||
+            tx.method.includes("Token"))) ||
+        
+        (tx.value === "0" &&
+          tx.to_address !== "0x0000000000000000000000000000000000000000");
+
+      if (isLikelyTokenTx) {
+        estimatedTokenCount++;
+
+        
+        tokenInteractions.push({
+          from_address: tx.from_address,
+          to_address: tx.to_address,
+          token_symbol: `TOKEN_${index + 1}`, 
+          value: tx.value || "0",
+          timestamp: tx.timestamp,
+        });
+      }
     });
 
-    if (response.data && response.data.status === "1" && response.data.result) {
-      console.log("✅ Successfully fetched token transfers");
-      return response.data.result.map((transfer: any) => ({
-        from_address: transfer.from,
-        to_address: transfer.to,
-        token_symbol: transfer.tokenSymbol,
-        value: transfer.value,
-        timestamp: new Date(parseInt(transfer.timeStamp) * 1000).toISOString(),
-      }));
-    } else {
-      throw new Error("Invalid token transfer response");
-    }
+    console.log("📊 Estimated token interactions found:", estimatedTokenCount);
+    console.log("💡 Token diversity will be based on transaction patterns");
+
+ 
+    return tokenInteractions.slice(0, 10); 
   } catch (error) {
-    console.log("❌ Token transfer API failed, using mock data");
+    console.log("❌ Transaction analysis failed, using minimal token data");
+    console.error(
+      "Analysis error:",
+      error instanceof Error ? error.message : String(error)
+    );
+   
     return [
       {
         from_address: address,
-        to_address: "0x8765...efgh",
-        token_symbol: "USDT",
-        value: "1000",
-        timestamp: "2024-01-15T10:30:00Z",
+        to_address: "0x0000000000000000000000000000000000000000",
+        token_symbol: "ESTIMATED",
+        value: "0",
+        timestamp: new Date().toISOString(),
       },
     ];
   }
@@ -211,5 +229,30 @@ export async function fetchWalletBalance(address: string): Promise<string> {
   } catch (error) {
     console.log("❌ Balance API failed, using mock data");
     return "1500000000000000000";
+  }
+}
+
+export async function fetchTokenInfo(contractAddress: string): Promise<any> {
+  try {
+    console.log("🪙 Fetching token info for contract:", contractAddress);
+
+    const response = await axios.get(`${BLOCKSCOUT_BASE_URL}/api`, {
+      params: {
+        module: "token",
+        action: "getToken",
+        contractaddress: contractAddress,
+      },
+      timeout: 3000,
+    });
+
+    if (response.data.status === "1" && response.data.result) {
+      console.log("🪙 Token info fetched:", response.data.result.symbol);
+      return response.data.result;
+    }
+
+    return null;
+  } catch (error) {
+    console.log("❌ Token info fetch failed for:", contractAddress);
+    return null;
   }
 }
