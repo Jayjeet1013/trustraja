@@ -97,30 +97,26 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 sm:py-12">
+    <div className="min-h-screen bg-gray-50 py-12">
       <WalletInput onAnalyze={handleAnalyze} isLoading={isLoading} />
 
       {error && (
-        <div className="max-w-3xl mx-auto mt-6 px-4 sm:px-6 animate-slide-up">
-          <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl p-5 shadow-lg">
-            <div className="flex items-start">
+        <div className="max-w-2xl mx-auto mt-6 px-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center">
-                  <span className="text-red-500 text-xl">⚠️</span>
-                </div>
+                <span className="text-red-400 text-xl">⚠️</span>
               </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-base font-semibold text-red-900 dark:text-red-100">
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
                   Analysis Error
                 </h3>
-                <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-                  {error}
-                </p>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
                 <button
                   onClick={() => setError("")}
-                  className="mt-3 text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 underline transition-colors"
+                  className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
                 >
-                  Dismiss and try again
+                  Dismiss
                 </button>
               </div>
             </div>
@@ -129,93 +125,49 @@ export default function HomePage() {
       )}
 
       {/* How it works section */}
-      <div className="max-w-6xl mx-auto mt-16 sm:mt-20 px-4 sm:px-6">
-        <div className="text-center mb-10 sm:mb-12 animate-slide-up">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            How TrustRaja Works
+      <div className="max-w-5xl mx-auto mt-20 px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            How It Works
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
-            Our AI-powered analysis combines blockchain data with intelligent
-            algorithms to provide comprehensive trust scores
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            We analyze blockchain data using AI to provide comprehensive wallet
+            trust scores
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          <div className="group bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:-translate-y-2 animate-slide-up">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">⛓️</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              Blockchain Analysis
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-4xl mb-4">⛓️</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Blockchain Data
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-              Fetch and analyze real transaction data from Blockscout API to
-              understand wallet behavior and activity patterns
+            <p className="text-gray-600 text-sm">
+              Fetch real transaction history from Blockscout to analyze wallet
+              activity patterns
             </p>
           </div>
 
-          <div
-            className="group bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:-translate-y-2 animate-slide-up"
-            style={{ animationDelay: "100ms" }}
-          >
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">🧠</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              AI Intelligence
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-4xl mb-4">🧠</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              AI Analysis
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-              Generate deep insights using ASI API for advanced behavioral
-              pattern analysis and risk assessment
+            <p className="text-gray-600 text-sm">
+              Use ASI AI to generate insights on behavior patterns and assess
+              risk levels
             </p>
           </div>
 
-          <div
-            className="group bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:-translate-y-2 animate-slide-up"
-            style={{ animationDelay: "200ms" }}
-          >
-            <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/40 dark:to-pink-800/40 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-              <span className="text-4xl">📊</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-4xl mb-4">📊</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Trust Score
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-              Calculate a comprehensive 0-100 trust rating based on multiple
-              factors including transaction history and token diversity
+            <p className="text-gray-600 text-sm">
+              Calculate a 0-100 score based on transaction history, tokens, and
+              activity
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="max-w-4xl mx-auto mt-16 px-4 sm:px-6">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 sm:p-10 text-white shadow-2xl">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl sm:text-3xl font-bold mb-2">
-              Trusted by Web3 Community
-            </h3>
-            <p className="text-blue-100">
-              Real-time analysis powered by cutting-edge technology
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold mb-1">100%</div>
-              <div className="text-sm text-blue-100">Accuracy</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold mb-1">&lt;10s</div>
-              <div className="text-sm text-blue-100">Analysis Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold mb-1">24/7</div>
-              <div className="text-sm text-blue-100">Available</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold mb-1">∞</div>
-              <div className="text-sm text-blue-100">Wallets</div>
-            </div>
           </div>
         </div>
       </div>
