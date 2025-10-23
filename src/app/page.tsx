@@ -125,48 +125,54 @@ export default function HomePage() {
       )}
 
       {/* How it works section */}
-      <div className="max-w-5xl mx-auto mt-20 px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+      <div className="max-w-6xl mx-auto mt-24 px-6">
+        <div className="text-center mb-14">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
             How It Works
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-base">
             We analyze blockchain data using AI to provide comprehensive wallet
             trust scores
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-4xl mb-4">⛓️</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+            <div className="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-5">
+              <span className="text-3xl">⛓️</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Blockchain Data
             </h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-sm leading-relaxed">
               Fetch real transaction history from Blockscout to analyze wallet
-              activity patterns
+              activity patterns and on-chain behavior
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-4xl mb-4">🧠</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+            <div className="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center mb-5">
+              <span className="text-3xl">🧠</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
               AI Analysis
             </h3>
-            <p className="text-gray-600 text-sm">
-              Use ASI AI to generate insights on behavior patterns and assess
-              risk levels
+            <p className="text-gray-600 text-sm leading-relaxed">
+              Use ASI AI to generate deep insights on behavior patterns and
+              assess risk levels intelligently
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+            <div className="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-5">
+              <span className="text-3xl">📊</span>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Trust Score
             </h3>
-            <p className="text-gray-600 text-sm">
-              Calculate a 0-100 score based on transaction history, tokens, and
-              activity
+            <p className="text-gray-600 text-sm leading-relaxed">
+              Calculate a comprehensive 0-100 score based on transaction
+              history, token diversity, and wallet activity
             </p>
           </div>
         </div>
