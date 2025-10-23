@@ -3,6 +3,8 @@ import {
   fetchWalletTxs,
   fetchTokenTransfers,
   fetchWalletBalance,
+  fetchMultiChainBalances,
+  getTotalBalanceUSD,
 } from "@/lib/blockscout";
 import { getAIAnalysis } from "@/lib/asi";
 import { calculateTrustScore } from "@/lib/score";
@@ -27,15 +29,25 @@ export async function POST(request: NextRequest) {
 
     console.log("🔍 Starting analysis for wallet:", address);
 
-    const [transactions, tokenTransfers, balance] = await Promise.all([
+    const [
+      transactions,
+      tokenTransfers,
+      balance,
+      multiChainBalances,
+      totalBalanceUSD,
+    ] = await Promise.all([
       fetchWalletTxs(address),
       fetchTokenTransfers(address),
       fetchWalletBalance(address),
+      fetchMultiChainBalances(address),
+      getTotalBalanceUSD(address),
     ]);
 
     console.log(
       `📊 Fetched ${transactions.length} transactions, ${tokenTransfers.length} token transfers`
     );
+    console.log(`🌐 Found balances on ${multiChainBalances.length} networks`);
+    console.log(`💰 Total balance: $${totalBalanceUSD.toFixed(2)} USD`);
 
     console.log("🔍 Detailed Blockchain Data Analysis:");
     console.log(
@@ -81,6 +93,8 @@ export async function POST(request: NextRequest) {
         transactionCount: transactions.length,
         tokenTransferCount: tokenTransfers.length,
         balanceETH: (parseFloat(balance) / 1e18).toFixed(4),
+        balanceUSD: totalBalanceUSD.toFixed(2),
+        multiChainBalances: multiChainBalances,
         analyzedAt: new Date().toISOString(),
         blockchainStats: {
           successfulTransactions: transactions.filter((tx) => tx.status === "1")
@@ -100,6 +114,7 @@ export async function POST(request: NextRequest) {
               new Date(tx.timestamp) >
               new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
           ),
+          networksActive: multiChainBalances.length,
         },
       },
     });

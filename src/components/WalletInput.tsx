@@ -42,10 +42,12 @@ export default function WalletInput({
           <div className="text-5xl">👑</div>
         </div>
         <h1 className="text-4xl font-bold text-gray-900 mb-3">TrustRaja</h1>
-        <p className="text-lg text-gray-600 mb-2">Web3 Wallet Trust Analyzer</p>
+        <p className="text-lg text-gray-600 mb-2">
+          Multi-Chain Wallet Trust Analyzer
+        </p>
         <p className="text-sm text-gray-500 max-w-md mx-auto">
-          Analyze wallet trustworthiness using blockchain data and AI-powered
-          insights
+          Analyze any wallet across Ethereum, Polygon, BSC, Base, Arbitrum,
+          Optimism & more using blockchain data and AI
         </p>
       </div>
 
@@ -128,7 +130,9 @@ export default function WalletInput({
           className="group text-xs font-mono text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2.5 rounded-lg border border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all inline-flex items-center hover:shadow-md"
           disabled={isLoading}
         >
-          <span className="mr-2 group-hover:scale-110 transition-transform">👆</span>
+          <span className="mr-2 group-hover:scale-110 transition-transform">
+            👆
+          </span>
           <span className="font-semibold">Click me:</span>
           <span className="ml-2">0x742d...f44e</span>
         </button>

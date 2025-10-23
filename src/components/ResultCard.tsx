@@ -12,13 +12,22 @@ interface ResultCardProps {
     transactionCount: number;
     tokenTransferCount: number;
     balanceETH: string;
+    balanceUSD?: string;
     analyzedAt: string;
+    multiChainBalances?: Array<{
+      network: string;
+      symbol: string;
+      balance: string;
+      balanceFormatted: string;
+      balanceUSD?: number;
+    }>;
     blockchainStats?: {
       successfulTransactions: number;
       failedTransactions: number;
       totalEthVolume: string;
       uniqueTokens: number;
       hasRecentActivity: boolean;
+      networksActive?: number;
     };
   };
   onBack: () => void;
@@ -93,17 +102,52 @@ export default function ResultCard({
         <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
             <span className="mr-2">⛓️</span>
-            Blockchain Data
+            Multi-Chain Blockchain Data
           </h2>
+
+          {/* Multi-Chain Balances */}
+          {metadata.multiChainBalances &&
+            metadata.multiChainBalances.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+                  Network Balances
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                  {metadata.multiChainBalances.map((chainBalance) => (
+                    <div
+                      key={chainBalance.network}
+                      className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200"
+                    >
+                      <div className="text-indigo-600 text-xs font-semibold mb-1 uppercase tracking-wide">
+                        {chainBalance.network}
+                      </div>
+                      <div className="text-lg font-bold text-indigo-900">
+                        {parseFloat(chainBalance.balanceFormatted).toFixed(4)}
+                      </div>
+                      <div className="text-xs text-indigo-600 mt-0.5">
+                        {chainBalance.symbol}
+                      </div>
+                      {chainBalance.balanceUSD !== undefined &&
+                        chainBalance.balanceUSD > 0 && (
+                          <div className="text-xs text-indigo-500 mt-1 font-medium">
+                            ~${chainBalance.balanceUSD.toFixed(2)}
+                          </div>
+                        )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-200">
               <div className="text-blue-600 text-xs font-semibold mb-2 uppercase tracking-wide">
-                ETH Balance
+                Total Balance
               </div>
               <div className="text-2xl font-bold text-blue-900">
-                {metadata.balanceETH}
+                ${metadata.balanceUSD || "0.00"}
               </div>
-              <div className="text-xs text-blue-600 mt-1">ETH</div>
+              <div className="text-xs text-blue-600 mt-1">USDT</div>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl border border-green-200">
               <div className="text-green-600 text-xs font-semibold mb-2 uppercase tracking-wide">
@@ -112,7 +156,7 @@ export default function ResultCard({
               <div className="text-2xl font-bold text-green-900">
                 {metadata.transactionCount}
               </div>
-              <div className="text-xs text-green-600 mt-1">Total</div>
+              <div className="text-xs text-green-600 mt-1">All Chains</div>
             </div>
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl border border-purple-200">
               <div className="text-purple-600 text-xs font-semibold mb-2 uppercase tracking-wide">
@@ -123,19 +167,16 @@ export default function ResultCard({
               </div>
               <div className="text-xs text-purple-600 mt-1">Interactions</div>
             </div>
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-5 rounded-xl border border-gray-200">
-              <div className="text-gray-600 text-xs font-semibold mb-2 uppercase tracking-wide">
-                Analyzed
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-5 rounded-xl border border-orange-200">
+              <div className="text-orange-600 text-xs font-semibold mb-2 uppercase tracking-wide">
+                Active Networks
               </div>
-              <div className="text-base font-bold text-gray-900">
-                {new Date(metadata.analyzedAt).toLocaleDateString()}
+              <div className="text-2xl font-bold text-orange-900">
+                {metadata.blockchainStats?.networksActive ||
+                  metadata.multiChainBalances?.length ||
+                  0}
               </div>
-              <div className="text-xs text-gray-600 mt-1">
-                {new Date(metadata.analyzedAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
+              <div className="text-xs text-orange-600 mt-1">Chains</div>
             </div>
           </div>
         </div>
