@@ -63,7 +63,7 @@ export default function WalletInput({
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+              placeholder="Write or paste an Base wallet address"
               className="w-full px-4 py-3 border placeholder-gray-400 text-gray-800 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-mono transition-all"
               disabled={isLoading}
             />
