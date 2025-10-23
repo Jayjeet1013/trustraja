@@ -41,8 +41,8 @@ export default function WalletInput({
         <h1 className="text-4xl font-bold text-gray-900 mb-4">👑 TrustRaja</h1>
         <p className="text-lg text-gray-600">AI-powered Web3 Trust Analyzer</p>
         <p className="text-sm text-gray-500 mt-2">
-          Analyze any Ethereum wallet's trustworthiness using blockchain data
-          and AI
+          Analyze any Ethereum wallet&apos;s trustworthiness using blockchain
+          data and AI
         </p>
       </div>
 

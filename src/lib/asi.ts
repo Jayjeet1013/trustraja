@@ -2,9 +2,17 @@ import type { TxItem } from "./blockscout";
 
 const ASI_API_KEY = process.env.ASI_API_KEY;
 
+interface TokenTransfer {
+  from_address: string;
+  to_address: string;
+  token_symbol: string;
+  value: string;
+  timestamp: string;
+}
+
 interface ASIAnalysisRequest {
   transactions: TxItem[];
-  tokenTransfers?: any[];
+  tokenTransfers?: TokenTransfer[];
   walletBalance?: string;
 }
 
@@ -30,22 +38,23 @@ export async function getAIAnalysis(
     const response = await fetch("https://api.asi1.ai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${ASI_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${ASI_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "asi1-mini",
         messages: [
           {
             role: "system",
-            content: "You are a blockchain analyst expert. Analyze wallet behavior and provide insights in a structured format.",
+            content:
+              "You are a blockchain analyst expert. Analyze wallet behavior and provide insights in a structured format.",
           },
           {
             role: "user",
             content: analysisPrompt,
           },
-        ]
-      })
+        ],
+      }),
     });
 
     if (!response.ok) {
@@ -53,7 +62,7 @@ export async function getAIAnalysis(
     }
 
     const data_response = await response.json();
-    
+
     if (data_response && data_response.choices && data_response.choices[0]) {
       const aiResponse = data_response.choices[0].message.content;
       console.log("✅ Successfully generated AI analysis");
@@ -62,9 +71,8 @@ export async function getAIAnalysis(
     } else {
       throw new Error("Invalid ASI API response");
     }
-  } catch (error) {
+  } catch {
     console.log("❌ ASI API failed, generating fallback analysis");
-    console.error("ASI API error:", error);
 
     return generateFallbackAnalysis(data);
   }
@@ -113,7 +121,7 @@ Format as: RISK_LEVEL|PATTERN|SUMMARY|INSIGHT1|INSIGHT2|INSIGHT3`;
 
 function parseAIResponse(
   aiResponse: string,
-  data: ASIAnalysisRequest
+  _data: ASIAnalysisRequest
 ): AIAnalysisResult {
   try {
     const parts = aiResponse.split("|");
@@ -131,7 +139,7 @@ function parseAIResponse(
           .filter(Boolean),
       };
     }
-  } catch (error) {
+  } catch {
     console.log("Failed to parse structured AI response, using fallback");
   }
 

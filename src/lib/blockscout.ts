@@ -81,22 +81,35 @@ export async function fetchWalletTxs(
     if (response.data && response.data.items) {
       console.log("✅ Successfully fetched REAL transaction data from v2 API");
 
-      return response.data.items.map((tx: any) => ({
-        hash: tx.hash,
-        block_number: tx.block,
-        from_address: tx.from?.hash || "",
-        to_address: tx.to?.hash || "",
-        value: tx.value || "0",
-        timestamp: tx.timestamp || new Date().toISOString(),
-        status: tx.status === "ok" ? "1" : "0",
-        method: tx.method || null,
-        gas_used: tx.gas_used,
-        gas_price: tx.gas_price,
-      }));
+      return response.data.items.map(
+        (tx: {
+          hash: string;
+          block: number;
+          from?: { hash: string };
+          to?: { hash: string };
+          value?: string;
+          timestamp?: string;
+          status: string;
+          method?: string;
+          gas_used?: string;
+          gas_price?: string;
+        }) => ({
+          hash: tx.hash,
+          block_number: tx.block,
+          from_address: tx.from?.hash || "",
+          to_address: tx.to?.hash || "",
+          value: tx.value || "0",
+          timestamp: tx.timestamp || new Date().toISOString(),
+          status: tx.status === "ok" ? "1" : "0",
+          method: tx.method || null,
+          gas_used: tx.gas_used,
+          gas_price: tx.gas_price,
+        })
+      );
     } else {
       throw new Error("Invalid v2 API response structure");
     }
-  } catch (error) {
+  } catch {
     console.log("❌ v2 API failed, trying legacy API...");
 
     try {
@@ -121,18 +134,29 @@ export async function fetchWalletTxs(
         response.data.result
       ) {
         console.log("✅ Successfully fetched data from legacy API");
-        return response.data.result.map((tx: any) => ({
-          hash: tx.hash,
-          block_number: parseInt(tx.blockNumber),
-          from_address: tx.from,
-          to_address: tx.to,
-          value: tx.value,
-          timestamp: new Date(parseInt(tx.timeStamp) * 1000).toISOString(),
-          status: tx.isError === "0" ? "1" : "0",
-          method: tx.functionName || null,
-        }));
+        return response.data.result.map(
+          (tx: {
+            hash: string;
+            blockNumber: string;
+            from: string;
+            to: string;
+            value: string;
+            timeStamp: string;
+            isError: string;
+            functionName?: string;
+          }) => ({
+            hash: tx.hash,
+            block_number: parseInt(tx.blockNumber),
+            from_address: tx.from,
+            to_address: tx.to,
+            value: tx.value,
+            timestamp: new Date(parseInt(tx.timeStamp) * 1000).toISOString(),
+            status: tx.isError === "0" ? "1" : "0",
+            method: tx.functionName || null,
+          })
+        );
       }
-    } catch (legacyError) {
+    } catch {
       console.log("❌ Both APIs failed, using mock data");
     }
 
@@ -145,10 +169,8 @@ export async function fetchTokenTransfers(
 ): Promise<BlockscoutTokenTransfer[]> {
   console.log("🌐 Extracting token activity from transaction data...");
 
-  
   try {
-    
-    const transactions = await fetchWalletTxs(address, 20); 
+    const transactions = await fetchWalletTxs(address, 20);
 
     console.log("🔍 Analyzing transactions for token interactions...");
 
@@ -156,25 +178,22 @@ export async function fetchTokenTransfers(
     let estimatedTokenCount = 0;
 
     transactions.forEach((tx, index) => {
-    
       const isLikelyTokenTx =
         (tx.method &&
           (tx.method.includes("transfer") ||
             tx.method.includes("swap") ||
             tx.method.includes("approve") ||
             tx.method.includes("Token"))) ||
-        
         (tx.value === "0" &&
           tx.to_address !== "0x0000000000000000000000000000000000000000");
 
       if (isLikelyTokenTx) {
         estimatedTokenCount++;
 
-        
         tokenInteractions.push({
           from_address: tx.from_address,
           to_address: tx.to_address,
-          token_symbol: `TOKEN_${index + 1}`, 
+          token_symbol: `TOKEN_${index + 1}`,
           value: tx.value || "0",
           timestamp: tx.timestamp,
         });
@@ -184,15 +203,10 @@ export async function fetchTokenTransfers(
     console.log("📊 Estimated token interactions found:", estimatedTokenCount);
     console.log("💡 Token diversity will be based on transaction patterns");
 
- 
-    return tokenInteractions.slice(0, 10); 
-  } catch (error) {
+    return tokenInteractions.slice(0, 10);
+  } catch {
     console.log("❌ Transaction analysis failed, using minimal token data");
-    console.error(
-      "Analysis error:",
-      error instanceof Error ? error.message : String(error)
-    );
-   
+
     return [
       {
         from_address: address,
@@ -226,13 +240,17 @@ export async function fetchWalletBalance(address: string): Promise<string> {
     } else {
       throw new Error("Invalid balance response");
     }
-  } catch (error) {
+  } catch {
     console.log("❌ Balance API failed, using mock data");
     return "1500000000000000000";
   }
 }
 
-export async function fetchTokenInfo(contractAddress: string): Promise<any> {
+export async function fetchTokenInfo(contractAddress: string): Promise<{
+  symbol?: string;
+  name?: string;
+  decimals?: string;
+} | null> {
   try {
     console.log("🪙 Fetching token info for contract:", contractAddress);
 
@@ -251,7 +269,7 @@ export async function fetchTokenInfo(contractAddress: string): Promise<any> {
     }
 
     return null;
-  } catch (error) {
+  } catch {
     console.log("❌ Token info fetch failed for:", contractAddress);
     return null;
   }

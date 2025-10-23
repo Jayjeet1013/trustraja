@@ -1,5 +1,9 @@
 import type { TxItem } from "./blockscout";
 
+interface TokenTransfer {
+  token_symbol: string;
+}
+
 export interface TrustScoreDetails {
   totalScore: number;
   breakdown: {
@@ -16,7 +20,7 @@ export interface TrustScoreDetails {
 
 export function calculateTrustScore(
   transactions: TxItem[],
-  tokenTransfers: any[] = [],
+  tokenTransfers: TokenTransfer[] = [],
   balance: string = "0"
 ): TrustScoreDetails {
   console.log("📊 Calculating trust score...");
