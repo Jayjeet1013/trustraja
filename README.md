@@ -115,31 +115,6 @@ pnpm build
 pnpm start
 ```
 
-### Environment Variables
-
-```env
-NEXT_PUBLIC_BLOCKSCOUT_API_KEY=your_blockscout_key (optional)
-NEXT_PUBLIC_BLOCKSCOUT_URL=https://eth.blockscout.com
-ASI_API_KEY=your_asi_api_key
-```
-
----
-
-## 🌍 Supported Networks
-
-| Network         | Symbol | Explorer                 |
-| --------------- | ------ | ------------------------ |
-| Ethereum        | ETH    | eth.blockscout.com       |
-| Polygon         | MATIC  | polygon.blockscout.com   |
-| BNB Smart Chain | BNB    | bsc.blockscout.com       |
-| Base            | ETH    | base.blockscout.com      |
-| Arbitrum        | ETH    | arbitrum.blockscout.com  |
-| Optimism        | ETH    | optimism.blockscout.com  |
-| Gnosis          | xDAI   | gnosis.blockscout.com    |
-| Avalanche       | AVAX   | avalanche.blockscout.com |
-
----
-
 ## 🧱 Example Use Case
 
 **Scenario:** A user is about to trade NFTs with an unknown wallet.
@@ -180,18 +155,6 @@ ASI_API_KEY=your_asi_api_key
 - 💭 Fraud detection alerts
 - 💭 Community reputation system
 - 💭 Smart contract interaction analysis
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Jayjeet1013/trustraja/issues).
 
 ---
 
