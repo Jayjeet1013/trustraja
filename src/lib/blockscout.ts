@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Multi-chain configuration for all major Ethereum-compatible networks
 const BLOCKSCOUT_NETWORKS = {
   ethereum: {
     name: "Ethereum",
@@ -57,7 +56,7 @@ export interface TxItem {
   method: string | null;
   gas_used?: string;
   gas_price?: string;
-  network?: string; // Added network identifier
+  network?: string;
 }
 
 interface BlockscoutTokenTransfer {
@@ -66,7 +65,7 @@ interface BlockscoutTokenTransfer {
   token_symbol: string;
   value: string;
   timestamp: string;
-  network?: string; // Added network identifier
+  network?: string;
 }
 
 export interface NetworkBalance {
@@ -77,7 +76,6 @@ export interface NetworkBalance {
   balanceUSD?: number;
 }
 
-// Approximate USD prices for different tokens (you can replace with real-time API)
 const APPROXIMATE_USD_PRICES: Record<string, number> = {
   ETH: 2500,
   MATIC: 0.75,
@@ -86,13 +84,11 @@ const APPROXIMATE_USD_PRICES: Record<string, number> = {
   AVAX: 35,
 };
 
-// Function to get approximate USD value
 function getUSDValue(amount: number, symbol: string): number {
   const price = APPROXIMATE_USD_PRICES[symbol] || 0;
   return amount * price;
 }
 
-// Generate random mock transactions (for demonstration when APIs fail)
 function generateMockTransactions(
   address: string,
   count: number = 250
@@ -113,9 +109,9 @@ function generateMockTransactions(
   for (let i = 0; i < count; i++) {
     const randomNetwork = networks[Math.floor(Math.random() * networks.length)];
     const randomMethod = methods[Math.floor(Math.random() * methods.length)];
-    const randomValue = (Math.random() * 10 * 1e18).toString(); // 0-10 ETH
-    const randomDaysAgo = Math.floor(Math.random() * 365); // Last year
-    const randomStatus = Math.random() > 0.1 ? "1" : "0"; // 90% success rate
+    const randomValue = (Math.random() * 10 * 1e18).toString();
+    const randomDaysAgo = Math.floor(Math.random() * 365);
+    const randomStatus = Math.random() > 0.1 ? "1" : "0";
 
     const timestamp = new Date();
     timestamp.setDate(timestamp.getDate() - randomDaysAgo);
@@ -139,7 +135,6 @@ function generateMockTransactions(
     });
   }
 
-  // Sort by timestamp (newest first)
   mockTxs.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
@@ -147,7 +142,6 @@ function generateMockTransactions(
   return mockTxs;
 }
 
-// Fetch transactions from a single network
 async function fetchNetworkTxs(
   address: string,
   networkKey: string,
@@ -157,7 +151,6 @@ async function fetchNetworkTxs(
   try {
     console.log(`🔍 Fetching from ${networkConfig.name}...`);
 
-    // Try v2 API first
     const instanceUrl = `${networkConfig.url}/api/v2/addresses/${address}/transactions`;
 
     const response = await axios.get(instanceUrl, {
@@ -212,7 +205,6 @@ async function fetchNetworkTxs(
     );
   }
 
-  // Try legacy API as fallback
   try {
     const response = await axios.get(`${networkConfig.url}/api`, {
       params: {
@@ -276,7 +268,6 @@ async function fetchNetworkTxs(
   return [];
 }
 
-// Fetch transactions from all networks
 export async function fetchWalletTxs(
   address: string,
   itemsCount = 250
@@ -313,7 +304,6 @@ export async function fetchWalletTxs(
     return generateMockTransactions(address, itemsCount);
   }
 
-  // Sort by timestamp (newest first)
   allTransactions.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
@@ -322,7 +312,6 @@ export async function fetchWalletTxs(
     `📊 Total: ${allTransactions.length} transactions from ${networksWithData} networks`
   );
 
-  // Return up to itemsCount transactions (distributed across networks)
   return allTransactions.slice(0, itemsCount);
 }
 
@@ -368,7 +357,6 @@ export async function fetchTokenTransfers(
       `📊 Found ${tokenInteractions.length} token interactions across all chains`
     );
 
-    // Return all token interactions found
     return tokenInteractions;
   } catch (error) {
     console.log("❌ Transaction analysis failed:", error);
@@ -385,7 +373,6 @@ export async function fetchTokenTransfers(
   }
 }
 
-// Fetch balance from a single network
 async function fetchNetworkBalance(
   address: string,
   networkKey: string,
@@ -433,7 +420,6 @@ async function fetchNetworkBalance(
   return null;
 }
 
-// Fetch balances from all networks
 export async function fetchWalletBalance(address: string): Promise<string> {
   console.log("🌐 Fetching wallet balance from ALL networks...");
 
@@ -452,16 +438,14 @@ export async function fetchWalletBalance(address: string): Promise<string> {
 
   if (networkBalances.length === 0) {
     console.log("❌ No balances found on any network, using mock data");
-    return "1500000000000000000"; // 1.5 ETH mock
+    return "1500000000000000000";
   }
 
-  // Calculate total balance (convert everything to ETH equivalent for simplicity)
   const totalBalance = networkBalances.reduce(
     (sum, nb) => sum + parseFloat(nb.balance),
     0
   );
 
-  // Calculate total USD value
   const totalUSD = networkBalances.reduce(
     (sum, nb) => sum + (nb.balanceUSD || 0),
     0
@@ -476,13 +460,11 @@ export async function fetchWalletBalance(address: string): Promise<string> {
   return totalBalance.toString();
 }
 
-// Get total USD value of all balances
 export async function getTotalBalanceUSD(address: string): Promise<number> {
   const balances = await fetchMultiChainBalances(address);
   return balances.reduce((sum, nb) => sum + (nb.balanceUSD || 0), 0);
 }
 
-// Get detailed multi-chain balance breakdown
 export async function fetchMultiChainBalances(
   address: string
 ): Promise<NetworkBalance[]> {
@@ -512,7 +494,6 @@ export async function fetchTokenInfo(contractAddress: string): Promise<{
   try {
     console.log("🪙 Fetching token info for contract:", contractAddress);
 
-    // Try Ethereum mainnet first
     const response = await axios.get(
       `${BLOCKSCOUT_NETWORKS.ethereum.url}/api`,
       {
