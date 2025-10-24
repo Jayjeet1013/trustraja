@@ -216,6 +216,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ### ⭐ Star this repo if you find it useful!
 
-Made with ❤️ by the TrustRaja team
+Made with ❤️ by Jayjeet Kumar
 
 </div>
